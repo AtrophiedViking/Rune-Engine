@@ -7,8 +7,8 @@ int main()
 	Rune::ApplicationConfig config;
 	config.Name = "Rune Engine";
 	config.windowConfig.Title = "Launcher";
-	config.windowConfig.Width = 600;
-	config.windowConfig.Height = 800;
+	config.windowConfig.Width = 400;
+	config.windowConfig.Height = 200;
 	config.windowConfig.Fullscreen = false;
 	config.windowConfig.Resizable = false;
 

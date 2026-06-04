@@ -36,15 +36,12 @@ void ClientLayer::OnUpdate(float ts)
 
 void ClientLayer::OnRender()
 {
-	glm::vec2 framebufferSize = Rune::Application::Get().GetFramebufferSize();
-	glViewport(0, 0, static_cast<GLsizei>(framebufferSize.x), static_cast<GLsizei>(framebufferSize.y));
-	//TODO: Render
 
 }
 
 bool ClientLayer::OnMouseButtonPressed(Rune::MouseButtonPressedEvent& event)
 {
-	glm::vec2 framebufferSize = Rune::Application::Get().GetFramebufferSize();
+	glm::vec2 framebufferSize = GetOwner()->GetFramebufferSize();
 	float aspectRatio = framebufferSize.x / framebufferSize.y;
 	glm::vec2 normalizedMousePos = (m_MousePosition / framebufferSize) * 2.0f - 1.0f;
 	normalizedMousePos.x *= aspectRatio;

@@ -37,7 +37,6 @@ namespace Rune {
 
 		virtual void RaiseEvent(Event& event);
 
-		glm::vec2 GetFramebufferSize() const;
 		virtual std::shared_ptr<Window> GetWindow() const { return m_Windows.empty() ? nullptr : m_Windows.front(); }
 		static Application& Get();
 		static float GetTime();

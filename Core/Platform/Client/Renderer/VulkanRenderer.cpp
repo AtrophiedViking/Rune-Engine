@@ -1,3 +1,5 @@
+#define VMA_IMPLEMENTATION
+#include <vk_mem_alloc.h>
 #include "VulkanRenderer.h"
 #include "../Platform/Client/Application-Client.h"
 #include "log/log.h"
@@ -9,10 +11,12 @@ namespace Rune
 		InstanceCreate(Application::Get().s_Config.Name.c_str());
 		PhysicalDevicePick();
 		LogicalDeviceCreate();
+		AllocatorCreate();
 		RUNE_DEBUG("Renderer Initialized!");
 	}
 	Renderer::~Renderer()
 	{
+		AllocatorDestroy();
 		LogicalDeviceDestroy();
 		InstanceDestroy();
 		RUNE_DEBUG("Renderer Terminated!");
@@ -71,7 +75,7 @@ namespace Rune
 		std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &queueFamilyCount, queueFamilies.data());
 		uint32_t m_queueFamilyIndex;
-		for (size_t i = 0; i < queueFamilies.size(); i++)
+		for (uint32_t i = 0; i < queueFamilies.size(); i++)
 		{
 			if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
 				m_queueFamilyIndex = i;
@@ -127,5 +131,27 @@ namespace Rune
 	{
 		if (m_LogicalDevice)
 			vkDestroyDevice(m_LogicalDevice, nullptr);
+	}
+	
+	void Renderer::AllocatorCreate()
+	{
+		VmaVulkanFunctions vkFunctions{
+			.vkGetInstanceProcAddr = vkGetInstanceProcAddr,
+			.vkGetDeviceProcAddr = vkGetDeviceProcAddr,
+			.vkCreateImage = vkCreateImage
+		};
+		VmaAllocatorCreateInfo allocatorCreateInfo{
+			.flags = VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT,
+			.physicalDevice = m_PhysicalDevice,
+			.device = m_LogicalDevice,
+			.pVulkanFunctions = &vkFunctions,
+			.instance = m_Instance
+		};
+		RUNE_ASSERT(vmaCreateAllocator(&allocatorCreateInfo, &m_allocator) == VK_SUCCESS, "Failed to create VMA allocator!");
+	}
+	void Renderer::AllocatorDestroy()
+	{
+		if (m_allocator)
+			vmaDestroyAllocator(m_allocator);
 	}
 }

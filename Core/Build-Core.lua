@@ -12,11 +12,12 @@ project "Core"
       "Source",
       "Platform/Client",
 	  -- Include
-      "../vendor/GameNetworkingSockets/include",
-      "../vendor/glm",
-      "../vender/GLFW/include",
-      "../vendor/spdlog/include",
-      "../vendor/imgui"
+      "../Vendor/GameNetworkingSockets/include",
+      "../Vendor/glm",
+      "../Vender/GLFW/include",
+      "../Vendor/spdlog/include",
+      "../Vendor/imgui",
+      "../Vendor/Vulkan/include"
    }
 
    links

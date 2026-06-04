@@ -16,7 +16,8 @@ project "Client"
       "../vendor/glm",
       "../vender/GLFW/include",
       "../Vendor/spdlog/include",
-      "../Vendor/imgui"
+      "../Vendor/imgui",
+      "../Vendor/Vulkan/include"
    }
 
    links

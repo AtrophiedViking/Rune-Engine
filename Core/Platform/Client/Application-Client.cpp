@@ -168,11 +168,6 @@ namespace Rune
 			m_WindowCloseQueue.push_back(window);
 	}
 
-	glm::vec2 Application::GetFramebufferSize() const
-	{
-		auto primary = GetWindow();
-		return primary ? primary->GetFramebufferSize() : glm::vec2{ 0.0f, 0.0f };
-	}
 	Application& Application::Get()
 	{
 		assert(s_Application);
