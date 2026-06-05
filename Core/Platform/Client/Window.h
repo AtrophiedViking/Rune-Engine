@@ -5,6 +5,7 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <vector>
+
 #include "Layer.h"
 #include "Event.h"
 
@@ -24,6 +25,7 @@ namespace Rune
 		EventCallbackFn EventCallback;
 	};
 
+	class Swapchain;
 	class Window
 	{
 	public: // Window Management
@@ -89,6 +91,7 @@ namespace Rune
 		WindowConfig m_Config;
 		GLFWwindow* m_Handle = nullptr;
 		VkSurfaceKHR m_Surface = VK_NULL_HANDLE;
+		std::unique_ptr<Swapchain> m_Swapchain = nullptr;
 		std::vector<std::unique_ptr<Layer>> m_LayerStack;
 
 		friend class Layer;

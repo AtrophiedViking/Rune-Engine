@@ -1,7 +1,7 @@
 #include "LauncherLayer.h"
 #include "Log/log.h"
 #include "imgui.h"
-
+#include "ClientLayer.h"
 LauncherLayer::LauncherLayer()
 {
 	RUNE_DEBUG("Created New Launcher-Layer!");
@@ -39,6 +39,21 @@ bool LauncherLayer::OnMouseButtonPressed(Rune::MouseButtonPressedEvent& event)
 
 bool LauncherLayer::OnKeyPressed(Rune::KeyPressedEvent& event)
 {
+	if (event.GetKeyCode() == GLFW_KEY_ESCAPE)
+	{
+		auto window = Rune::Application::Get().WindowCreate({ "Client", 400, 600, false, false });
+
+		window->PushLayer<ClientLayer>();
+
+		if (auto owner = GetOwner())
+		{
+			// Request deferred close for only this window
+			Rune::Application::Get().WindowRequestClose(owner);
+			return true; // handled
+		}
+		//TransitionTo<MenuLayer>();
+		return true; // handled
+	}
 	return false;
 }
 

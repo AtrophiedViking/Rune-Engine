@@ -1,5 +1,5 @@
 #include <ranges>
-#include "../Platform/Client/Application-Client.h"
+#include "Renderer/Core/Swapchain.h"
 #include "window.h"
 #include "WindowEvents.h"
 #include "InputEvents.h"
@@ -24,7 +24,6 @@ namespace Rune
 			m_Config.Title.c_str(), nullptr, nullptr);
 
 		RUNE_ASSERT(m_Handle, "Failed to create GLFW window!");
-
 
 		glfwSetWindowUserPointer(m_Handle, this);
 
@@ -113,7 +112,9 @@ namespace Rune
 		RUNE_DEBUG("Created New Window: \"{}\" ({}x{})", m_Config.Title, m_Config.Width, m_Config.Height);
 
 		SurfaceCreate(m_Handle);
+		m_Swapchain = std::make_unique<Swapchain>(this);
 	}
+
 	void Window::Update()
 	{
 
@@ -125,24 +126,20 @@ namespace Rune
 		// Destroy layers first to ensure no layer calls GLFW during shutdown
 		m_LayerStack.clear();
 		// Then destroy the window handle
+		m_Swapchain = nullptr;
 		SurfaceDestroy(m_Handle);
 		glfwDestroyWindow(m_Handle);
 		m_Handle = nullptr;
 		RUNE_DEBUG("Destroyed Window!");
-
 	}
 
 	void Window::SurfaceCreate(GLFWwindow* m_Handle)
 	{
-		if (glfwCreateWindowSurface(Application::Get().s_Renderer->InstanceGet(), m_Handle, nullptr, &m_Surface) != VK_SUCCESS)
-		{
-			RUNE_ERROR("Failed to create window surface!");
-			assert(false);
-		}
-		else 
-		{
+		RUNE_ASSERT (glfwCreateWindowSurface(Application::Get().s_Renderer->InstanceGet(), m_Handle, nullptr, &m_Surface) == VK_SUCCESS, "Failed to create window surface!");
+		
+		if (m_Surface != VK_NULL_HANDLE)
 			RUNE_DEBUG("Created New SurfaceKHR!");
-		}
+	
 	}
 	void Window::SurfaceDestroy(GLFWwindow* window)
 	{
