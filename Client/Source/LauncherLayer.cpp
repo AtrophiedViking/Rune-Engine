@@ -61,7 +61,7 @@ bool LauncherLayer::OnWindowClosed(Rune::WindowClosedEvent& event)
 {
 	if (event.WindowGet())
 	{
-		auto primary = Rune::Application::Get().GetWindow();
+		auto primary = Rune::Application::Get().WindowGet();
 		
 		if (primary && event.WindowGet() == primary.get())
 		{

@@ -8,7 +8,6 @@
 #include <functional>
 
 #include "log/log.h"
-#include "Renderer/VulkanRenderer.h"
 #include "Layer.h"
 #include "Window.h"
 #include "Event.h"
@@ -16,11 +15,11 @@
 
 namespace Rune {
 
+	class Renderer;
 	struct ApplicationConfig {
 		std::string Name;
 		WindowConfig windowConfig;
 	};
-	
 	class Application
 	{
 	public:
@@ -37,16 +36,20 @@ namespace Rune {
 
 		virtual void RaiseEvent(Event& event);
 
-		virtual std::shared_ptr<Window> GetWindow() const { return m_Windows.empty() ? nullptr : m_Windows.front(); }
+	public:
+		std::shared_ptr<Window> WindowGet() const { return m_Windows.empty() ? nullptr : m_Windows.front(); }
+		
+		static Renderer& RendererGet() { return *Get().m_Renderer; }
+
 		static Application& Get();
-		static float GetTime();
+		static float TimeGet();
 
 	public:
 		std::unique_ptr<Rune::Logger> s_Logger;
-		std::unique_ptr<Renderer> s_Renderer;
 		ApplicationConfig s_Config;
-	private:
 
+	private:
+		std::unique_ptr<Renderer> m_Renderer;
 		std::vector<std::shared_ptr<Window>> m_Windows;
 		std::vector<Window*> m_WindowCloseQueue;
 		std::vector<std::unique_ptr<Layer>> m_LayerStack;

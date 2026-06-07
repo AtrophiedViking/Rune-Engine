@@ -1,8 +1,11 @@
 #pragma once
-#include "../../Application-Client.h"
+#include <vulkan/vulkan.h>
+#include <memory>
 
 namespace Rune
 {
+	class Window;
+	class SwapchainResources;
 	class Swapchain
 	{
 	public:
@@ -12,12 +15,15 @@ namespace Rune
 		void Destroy();
 		void Recreate();
 		void Present();
-	private:
-		Window* GetOwner() const { return (Window*)m_Owner; }
+
+	public:
+		VkSwapchainKHR HandleGet() const { return m_Handle; }
+		Window* OwnerGet() const { return (Window*)m_Owner; }
 
 	private:
 		VkExtent2D m_Extent;
 		Window* m_Owner = nullptr;
-		VkSwapchainKHR m_Swapchain = VK_NULL_HANDLE;
+		VkSwapchainKHR m_Handle = VK_NULL_HANDLE;
+		std::unique_ptr<SwapchainResources> m_Resources = nullptr;
 	};
 }

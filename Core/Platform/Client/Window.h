@@ -49,10 +49,14 @@ namespace Rune
 	public: //	Event Handling
 		glm::vec2 GetFramebufferSize() const;
 		glm::vec2 GetMousePos() const;
+		std::string TitleGet() const { return m_Config.Title; }
+		Swapchain& SwapchainGet() { return *m_Swapchain; }
 		GLFWwindow* GetHandle() const { return m_Handle; }
 		static Window& Get();
 		bool IsValid() const { return m_Handle != nullptr; }
 		
+
+
 
 	public: //Layer Management
 		template<typename TLayer>

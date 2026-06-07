@@ -1,4 +1,5 @@
 #include "Application-Client.h"
+#include "Renderer/VulkanRenderer.h"
 #include <GLFW/glfw3.h>
 #include "log/log.h"
 #include <iostream>
@@ -37,11 +38,11 @@ namespace Rune
 
 		s_Config.windowConfig.EventCallback = [this](Event& event) { RaiseEvent(event); };
 		
-		s_Renderer = std::make_unique<Renderer>();
+		m_Renderer = std::make_unique<Renderer>();
 
 		// Log some basic info about the app and system
 		VkPhysicalDeviceProperties2 deviceProperties{ .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2 };
-		vkGetPhysicalDeviceProperties2(s_Renderer->PhysicalDeviceGet(), &deviceProperties);
+		vkGetPhysicalDeviceProperties2(m_Renderer->PhysicalDeviceGet(), &deviceProperties);
 
 		RUNE_INFO("{} Initialized!\n\t\t      GLFW {}\n\t\t      Vulkan {}.{}\n\t\t      {}",
 			s_Config.Name,
@@ -61,8 +62,8 @@ namespace Rune
 		}
 		m_Windows.clear();
 
-		if (s_Renderer)
-			s_Renderer.reset();
+		if (m_Renderer)
+			m_Renderer.reset();
 
 		if (--s_GLFWRefCount == 0)
 		{
@@ -95,7 +96,7 @@ namespace Rune
 	{
 		m_Running = true;
 
-		float lastTime = GetTime();
+		float lastTime = TimeGet();
 
 		// Main Application loop
 		while (m_Running)
@@ -127,10 +128,8 @@ namespace Rune
 				break;
 			}
 
-			// replace the section in Application::Run that updates/render the global m_LayerStack
-			// with per-window calls. Show only the replacement block for context.
 
-			float currentTime = GetTime();
+			float currentTime = TimeGet();
 			float timestep = glm::clamp(currentTime - lastTime, 0.001f, 0.1f);
 			lastTime = currentTime;
 
@@ -151,6 +150,7 @@ namespace Rune
 			if (!m_Windows.empty())
 				m_Windows.front()->Update();
 		}
+		vkDeviceWaitIdle(m_Renderer->LogicalDeviceGet());
 	}
 	void Application::Stop()
 	{
@@ -173,7 +173,7 @@ namespace Rune
 		assert(s_Application);
 		return *s_Application;
 	}
-	float Application::GetTime()
+	float Application::TimeGet()
 	{
 		return (float)glfwGetTime();
 	}

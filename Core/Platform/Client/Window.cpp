@@ -1,9 +1,12 @@
-#include <ranges>
-#include "Renderer/Core/Swapchain.h"
 #include "window.h"
+#include "log/log.h"
+#include "Application-Client.h"
+#include "Renderer/VulkanRenderer.h"
+#include "Renderer/Core/Swapchain.h"
 #include "WindowEvents.h"
 #include "InputEvents.h"
-#include "log/log.h"
+
+#include <ranges>
 namespace Rune
 {
 	Window::Window(const WindowConfig& config)
@@ -135,7 +138,7 @@ namespace Rune
 
 	void Window::SurfaceCreate(GLFWwindow* m_Handle)
 	{
-		RUNE_ASSERT (glfwCreateWindowSurface(Application::Get().s_Renderer->InstanceGet(), m_Handle, nullptr, &m_Surface) == VK_SUCCESS, "Failed to create window surface!");
+		RUNE_ASSERT (glfwCreateWindowSurface(Application::Get().RendererGet().InstanceGet(), m_Handle, nullptr, &m_Surface) == VK_SUCCESS, "Failed to create window surface!");
 		
 		if (m_Surface != VK_NULL_HANDLE)
 			RUNE_DEBUG("Created New SurfaceKHR!");
@@ -145,7 +148,7 @@ namespace Rune
 	{
 		if (m_Surface != VK_NULL_HANDLE)
 		{
-			vkDestroySurfaceKHR(Application::Get().s_Renderer->InstanceGet(), m_Surface, nullptr);
+			vkDestroySurfaceKHR(Application::Get().RendererGet().InstanceGet(), m_Surface, nullptr);
 			m_Surface = VK_NULL_HANDLE;
 			RUNE_DEBUG("Destroyed SurfaceKHR!");
 		}
@@ -198,7 +201,7 @@ namespace Rune
 	
 	Window& Window::Get()
 	{
-		auto ptr = Application::Get().GetWindow();
+		auto ptr = Application::Get().WindowGet();
 		RUNE_ASSERT(ptr, "Window::Get() called but Application has no window");
 		return *ptr;
 	}

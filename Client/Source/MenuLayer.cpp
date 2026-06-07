@@ -27,7 +27,7 @@ void MenuLayer::OnEvent(Rune::Event& event)
 
 void MenuLayer::OnUpdate(float ts)
 {
-	auto primary = Rune::Application::Get().GetWindow();
+	auto primary = Rune::Application::Get().WindowGet();
 	if (primary && primary->IsValid())
 	{
 		
@@ -87,7 +87,7 @@ bool MenuLayer::OnWindowClosed(Rune::WindowClosedEvent& event)
 	// If event gives the closed Window pointer, handle it here.
 	if (event.WindowGet())
 	{
-		auto primary = Rune::Application::Get().GetWindow();
+		auto primary = Rune::Application::Get().WindowGet();
 		// if primary window closed -> stop app (will trigger cleanup / destructors)
 		if (primary && event.WindowGet() == primary.get())
 		{

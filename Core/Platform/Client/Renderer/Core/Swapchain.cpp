@@ -1,10 +1,14 @@
 #include "Swapchain.h"
+#include "Resources/SwapchainResources.h"
+#include "../../Application-Client.h"
+#include "../VulkanRenderer.h"
 
 namespace Rune
 {
 	Swapchain::Swapchain(Window* window)
 	{
 		Create(window);
+		RUNE_INFO("Created Swapchain for Window: {}", window->TitleGet());
 	}
 	Swapchain::~Swapchain()
 	{
@@ -16,7 +20,7 @@ namespace Rune
 		m_Owner = window;
 		
 		VkSurfaceCapabilitiesKHR surfaceCaps{};
-		RUNE_ASSERT(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(Application::Get().s_Renderer->PhysicalDeviceGet(), window->SurfaceGet(), &surfaceCaps) == VK_SUCCESS, "Failed to get surface capabilities!");
+		RUNE_ASSERT(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(Application::Get().RendererGet().PhysicalDeviceGet(), window->SurfaceGet(), &surfaceCaps) == VK_SUCCESS, "Failed to get surface capabilities!");
 
 		VkExtent2D swapchainExtent{ surfaceCaps.currentExtent };
 		if (surfaceCaps.currentExtent.width == 0xFFFFFFFF) {
@@ -37,18 +41,20 @@ namespace Rune
 			.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
 			.presentMode = VK_PRESENT_MODE_FIFO_KHR
 		};
-		RUNE_ASSERT(vkCreateSwapchainKHR(Application::Get().s_Renderer->LogicalDeviceGet(), &swapchainCreateInfo, nullptr, &m_Swapchain) == VK_SUCCESS, "Failed to create swapchain!");
+		RUNE_ASSERT(vkCreateSwapchainKHR(Application::Get().RendererGet().LogicalDeviceGet(), &swapchainCreateInfo, nullptr, &m_Handle) == VK_SUCCESS, "Failed to create swapchain!");
 
 		RUNE_DEBUG("Created New Swapchain!");
+
+		m_Resources = std::make_unique<SwapchainResources>(*this);
 	}
 	void Swapchain::Destroy()
 	{
-		vkDestroySwapchainKHR(Application::Get().s_Renderer->LogicalDeviceGet(), m_Swapchain, nullptr);
+		m_Resources = nullptr;
+		vkDestroySwapchainKHR(Application::Get().RendererGet().LogicalDeviceGet(), m_Handle, nullptr);
 		RUNE_DEBUG("Destroyed Swapchain!");
 	}
 	void Swapchain::Recreate()
 	{
-
 	}
 	void Swapchain::Present()
 	{
