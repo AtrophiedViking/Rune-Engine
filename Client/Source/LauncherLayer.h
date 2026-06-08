@@ -17,5 +17,5 @@ private:
 	bool OnMouseMoved(Rune::MouseMovedEvent& event);
 	bool OnMouseButtonPressed(Rune::MouseButtonPressedEvent& event);
 	bool OnKeyPressed(Rune::KeyPressedEvent& event);
-	bool OnWindowClosed(Rune::WindowClosedEvent& event);
+	bool OnWindowClosed(Rune::WindowClosedEvent& event); 
 };
