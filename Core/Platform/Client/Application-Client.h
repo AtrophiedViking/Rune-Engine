@@ -23,7 +23,6 @@ namespace Rune {
 	class Application
 	{
 	public:
-		
 		Application(const ApplicationConfig& config = ApplicationConfig());
 		virtual ~Application();
 		
@@ -39,7 +38,7 @@ namespace Rune {
 	public:
 		std::shared_ptr<Window> WindowGet() const { return m_Windows.empty() ? nullptr : m_Windows.front(); }
 		
-		static Renderer& RendererGet() { return *Get().m_Renderer; }
+		Renderer& RendererGet() const { return *Get().m_Renderer; }
 
 		static Application& Get();
 		static float TimeGet();

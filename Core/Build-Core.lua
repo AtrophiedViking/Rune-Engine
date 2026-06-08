@@ -17,7 +17,8 @@ project "Core"
       "../Vender/GLFW/include",
       "../Vendor/spdlog/include",
       "../Vendor/imgui",
-      "../Vendor/Vulkan/include"
+      "../Vendor/VMA/include",
+      "../Vendor/fastgltf/include"
    }
 
    links
