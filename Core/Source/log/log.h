@@ -12,7 +12,7 @@
 #define RUNE_WARN(...) if(spdlog::get(RUNE_LOGGER)) {spdlog::get(RUNE_LOGGER)->warn(__VA_ARGS__);}
 #define RUNE_ERROR(...) if(spdlog::get(RUNE_LOGGER)) {spdlog::get(RUNE_LOGGER)->error(__VA_ARGS__);}
 #define RUNE_FATAL(...) if(spdlog::get(RUNE_LOGGER)) {spdlog::get(RUNE_LOGGER)->critical(__VA_ARGS__);}
-#define RUNE_ASSERT(x, msg) if((x)){} else { RUNE_FATAL("Assertion Failed: {}\n\t{}\n\tin file: {}\n\ton line: {}", #x, msg,__FILE__,__LINE__); abort();}
+#define RUNE_ASSERT(x, msg) if ((x)){} else { RUNE_FATAL("Assertion Failed: {}\n\t\t\t  {}\t\t\t  in file: {}\n\t\t\t  on line: {}", #x, msg,__FILE__,__LINE__); auto arg = getchar(); if(arg != NULL){ std::abort();}}
 #else
 #define RUNE_TRACE(...) (void)0
 #define RUNE_INFO(...) (void)0

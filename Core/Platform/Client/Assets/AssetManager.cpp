@@ -5,20 +5,30 @@
 
 namespace Rune
 {
-	AssetId AssetManager::loadMesh(const std::filesystem::path& file)
+	AssetId AssetManager::GLBLoad(const std::filesystem::path& file)
 	{
+        const std::filesystem::path baseDirRel = "../Client/Assets/Models";
+        const std::filesystem::path baseDir = std::filesystem::weakly_canonical(std::filesystem::absolute(baseDirRel));
+        const std::filesystem::path fullPath = (baseDir / file).lexically_normal();
+
 		fastgltf::Parser parser;
 
-		auto Data = fastgltf::GltfDataBuffer::FromPath(file);
-		if (Data.error() != fastgltf::Error::None)
-			RUNE_WARN("{}: Failed to load file");
+		auto Data = fastgltf::GltfDataBuffer::FromPath(fullPath);
+        if (Data.error() != fastgltf::Error::None) {
+            RUNE_WARN("GLBLoad: failed to load file '{}': {} - {}", fullPath.string(),
+                static_cast<uint64_t>(Data.error()), fastgltf::getErrorMessage(Data.error()));
+            return INVALID_ASSET_ID; // or appropriate failure handling
+        }
 
 		auto Options = fastgltf::Options::DontRequireValidAssetMember;
-		auto Asset = parser.loadGltfBinary(Data.get(), file, Options);
-		if (Asset.error() != fastgltf::Error::None)
-			RUNE_WARN("{}: Failed to Parse file");
+		auto Asset = parser.loadGltfBinary(Data.get(), fullPath.parent_path(), Options);
+        if (Asset.error() != fastgltf::Error::None) {
+            RUNE_WARN("GLBLoad: failed to parse '{}': ERROR[{}] - {}", fullPath.string(),
+                static_cast<uint64_t>(Asset.error()), fastgltf::getErrorMessage(Asset.error()));
+            return INVALID_ASSET_ID;
+        }
 
-        // ---------------------------------------------------------
+       // ---------------------------------------------------------
        // STEP 1: LOAD ALL MODEL IMAGES / TEXTURES FIRST
        // ---------------------------------------------------------
         std::vector<AssetId> localToGlobalTextureMap(Asset->textures.size(), 0);
@@ -43,7 +53,7 @@ namespace Rune
                 {
                     // Build the absolute file path on disk relative to the glTF container location
                     std::filesystem::path absolutePath = file.parent_path() / filePath.uri.fspath();
-                    localToGlobalTextureMap[i] = this->loadTexture(absolutePath);
+                    localToGlobalTextureMap[i] = this->TextureLoad(absolutePath);
                 }
             }
             // Check if the image source is embedded as an raw array vector inside the JSON
@@ -111,6 +121,7 @@ namespace Rune
             // Push material to manager
             m_Materials.push_back(newMaterial);
             localToGlobalMaterialMap[i] = m_Materials.size() - 1;
+            RUNE_DEBUG("Created Material {}", m_Materials.size() - 1)
         }
 
         // ---------------------------------------------------------
@@ -171,6 +182,32 @@ namespace Rune
         // newMesh.indexBuffer  = CreateVulkanBuffer(globalIndices.data(), globalIndices.size() * sizeof(uint32_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 
         m_Meshes.push_back(std::move(newMesh));
+        RUNE_DEBUG("Created Mesh {}", m_Meshes.size() - 1)
         return static_cast<AssetId>(m_Meshes.size() - 1);
 	}
+
+
+    AssetId AssetManager::TextureLoad(const std::filesystem::path& file)
+    {
+        TextureAsset newTexture;
+        
+        
+        m_Textures.push_back(newTexture);
+        return static_cast<AssetId>(m_Textures.size() - 1);
+    }
+
+    const MeshAsset& AssetManager::MeshGet(AssetId h) const
+    {
+        return m_Meshes[h];
+    }
+
+    const TextureAsset& AssetManager::TextureGet(AssetId h) const
+    {
+        return m_Textures[h];
+    }
+    //TODO
+    //AssetManager& AssetManager::Get()
+    //{
+    //    return ;
+    //}
 }

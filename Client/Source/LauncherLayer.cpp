@@ -2,10 +2,11 @@
 #include "Log/log.h"
 #include "imgui.h"
 #include "ClientLayer.h"
+#include "Assets/AssetManager.h"
 LauncherLayer::LauncherLayer()
 {
 	RUNE_DEBUG("Created New Launcher-Layer!");
-
+	
 }
 
 LauncherLayer::~LauncherLayer()

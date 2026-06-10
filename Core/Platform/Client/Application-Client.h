@@ -12,6 +12,7 @@
 #include "Window.h"
 #include "Event.h"
 #include "GUI/Gui.h"
+#include "Assets/AssetManager.h"
 
 namespace Rune {
 
@@ -22,7 +23,7 @@ namespace Rune {
 	};
 	class Application
 	{
-	public:
+	public: //Application Commands
 		Application(const ApplicationConfig& config = ApplicationConfig());
 		virtual ~Application();
 		
@@ -35,20 +36,22 @@ namespace Rune {
 
 		virtual void RaiseEvent(Event& event);
 
-	public:
-		std::shared_ptr<Window> WindowGet() const { return m_Windows.empty() ? nullptr : m_Windows.front(); }
-		
+	public: //Global Ownership
+		Logger& LoggerGet() { return *m_Logger; }
+		ApplicationConfig* ConfigGet() { return &m_Config; }
 		Renderer& RendererGet() const { return *Get().m_Renderer; }
+		AssetManager& AssetManagerGet() const { return *Get().m_AssetManager; };
+		std::shared_ptr<Window> WindowGet() const { return m_Windows.empty() ? nullptr : m_Windows.front(); }
 
 		static Application& Get();
 		static float TimeGet();
 
-	public:
-		std::unique_ptr<Rune::Logger> s_Logger;
-		ApplicationConfig s_Config;
-
-	private:
+	private: //Private Members 
+		std::unique_ptr<Rune::Logger> m_Logger;
+		ApplicationConfig m_Config;
 		std::unique_ptr<Renderer> m_Renderer;
+		std::unique_ptr<AssetManager> m_AssetManager;
+
 		std::vector<std::shared_ptr<Window>> m_Windows;
 		std::vector<Window*> m_WindowCloseQueue;
 		std::vector<std::unique_ptr<Layer>> m_LayerStack;

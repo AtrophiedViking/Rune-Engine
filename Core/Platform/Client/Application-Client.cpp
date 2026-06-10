@@ -1,7 +1,7 @@
 #include "Application-Client.h"
 #include "Renderer/VulkanRenderer.h"
-#include <GLFW/glfw3.h>
 #include "log/log.h"
+#include <GLFW/glfw3.h>
 #include <iostream>
 #include <glm/glm.hpp>
 #include <assert.h>
@@ -19,11 +19,11 @@ namespace Rune
 	}
 
 	Application::Application(const ApplicationConfig& config)
-		: s_Config(config)
+		: m_Config(config)
 	{
 		s_Application = this;
 
-		s_Logger = std::make_unique<Rune::Logger>("Rune");
+		m_Logger = std::make_unique<Rune::Logger>("Rune");
 
 		if (s_GLFWRefCount++ == 0)
 		{
@@ -33,19 +33,21 @@ namespace Rune
 			RUNE_DEBUG("GLFW initialized!");
 		}
 
-		if (s_Config.windowConfig.Title.empty())
-			s_Config.windowConfig.Title = s_Config.Name;
+		if (m_Config.windowConfig.Title.empty())
+			m_Config.windowConfig.Title = m_Config.Name;
 
-		s_Config.windowConfig.EventCallback = [this](Event& event) { RaiseEvent(event); };
+		m_Config.windowConfig.EventCallback = [this](Event& event) { RaiseEvent(event); };
 		
 		m_Renderer = std::make_unique<Renderer>();
+
+		m_AssetManager = std::make_unique<AssetManager>();
 
 		// Log some basic info about the app and system
 		VkPhysicalDeviceProperties2 deviceProperties{ .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2 };
 		vkGetPhysicalDeviceProperties2(m_Renderer->PhysicalDeviceGet(), &deviceProperties);
 
 		RUNE_INFO("{} Initialized!\n\t\t      GLFW {}\n\t\t      Vulkan {}.{}\n\t\t      {}",
-			s_Config.Name,
+			m_Config.Name,
 			glfwGetVersionString(),
 			VK_VERSION_MAJOR(VK_API_VERSION_1_3),
 			VK_VERSION_MINOR(VK_API_VERSION_1_3),
@@ -71,10 +73,10 @@ namespace Rune
 			RUNE_DEBUG("GLFW Terminated!");
 		}
 
-		RUNE_INFO("{} Terminated!", s_Config.Name);
+		RUNE_INFO("{} Terminated!", m_Config.Name);
 
-		if (s_Logger)
-			s_Logger.reset();
+		if (m_Logger)
+			m_Logger.reset();
 
 		s_Application = nullptr;
 
@@ -84,7 +86,7 @@ namespace Rune
 	{
 		WindowConfig cfg = config;
 		if (cfg.Title.empty())
-			cfg.Title = s_Config.Name;
+			cfg.Title = m_Config.Name;
 		cfg.EventCallback = [this](Event& event) { RaiseEvent(event); };
 		auto window = std::make_shared<Window>(cfg);
 		window->Create();

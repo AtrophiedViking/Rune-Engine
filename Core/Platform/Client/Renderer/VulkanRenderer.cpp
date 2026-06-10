@@ -3,12 +3,12 @@
 #include "VulkanRenderer.h"
 #include "../Platform/Client/Application-Client.h"
 #include "log/log.h"
+
 namespace Rune
 {
-
 	Renderer::Renderer()
 	{
-		InstanceCreate(Application::Get().s_Config.Name.c_str());
+		InstanceCreate(Application::Get().ConfigGet()->Name.c_str());
 		PhysicalDevicePick();
 		LogicalDeviceCreate();
 		AllocatorCreate();

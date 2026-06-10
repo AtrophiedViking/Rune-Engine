@@ -5,7 +5,7 @@ project "Core"
    targetdir "Binaries/%{cfg.buildcfg}"
    staticruntime "off"
 
-   files { "Source/**.h", "Source/**.cpp", "Platform/Client/**.h", "Platform/Client/**.cpp"}
+   files { "Source/**.h", "Source/**.cpp", "Platform/Client/**.h", "Platform/Client/**.cpp", "../Vendor/fastgltf/src/**.cpp", "../Vendor/simdjson/include/**.h", "../Vendor/simdjson/include/**.cpp", }
 
    includedirs
    {
@@ -18,7 +18,8 @@ project "Core"
       "../Vendor/spdlog/include",
       "../Vendor/imgui",
       "../Vendor/VMA/include",
-      "../Vendor/fastgltf/include"
+      "../Vendor/fastgltf/include",
+      "../Vendor/simdjson/include"
    }
 
    links
@@ -27,6 +28,7 @@ project "Core"
 
    defines
    {
+     "FASTGLTF_HEADER_ONLY"
    }
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")

@@ -74,7 +74,7 @@ namespace fastgltf {
 
     enum class Error : std::uint64_t {
 		None = 0,
-		InvalidPath = 1, ///< The glTF directory passed to load*GLTF is invalid.
+		InvalidPath = 1, ///< The GLTF directory passed to load GLTF is invalid.
 		MissingExtensions = 2, ///< One or more extensions are required by the glTF but not enabled in the Parser.
 		UnknownRequiredExtension = 3, ///< An extension required by the glTF is not supported by fastgltf.
 		InvalidJson = 4, ///< An error occurred while parsing the JSON.
@@ -118,16 +118,16 @@ namespace fastgltf {
 	FASTGLTF_EXPORT constexpr std::string_view getErrorMessage(Error error) {
 		switch (error) {
 			case Error::None: return "";
-			case Error::InvalidPath: return "The glTF directory passed to load*GLTF is invalid";
-			case Error::MissingExtensions: return "One or more extensions are required by the glTF but not enabled in the Parser.";
-			case Error::UnknownRequiredExtension: return "An extension required by the glTF is not supported by fastgltf.";
+			case Error::InvalidPath: return "The GLTF directory passed to load GLTF is invalid";
+			case Error::MissingExtensions: return "One or more extensions are required by the GLTF but not enabled in the Parser.";
+			case Error::UnknownRequiredExtension: return "An extension required by the GLTF is not supported by fastgltf.";
 			case Error::InvalidJson: return "An error occurred while parsing the JSON.";
-			case Error::InvalidGltf: return "The glTF is either missing something or has invalid data.";
+			case Error::InvalidGltf: return "The GLTF is either missing something or has invalid data.";
 			case Error::InvalidOrMissingAssetField: return "The glTF asset object is missing or invalid.";
 			case Error::InvalidGLB: return "The GLB container is invalid.";
 			case Error::MissingField: return "";
 			case Error::MissingExternalBuffer: return "An external buffer was not found.";
-			case Error::UnsupportedVersion: return "The glTF version is not supported by fastgltf.";
+			case Error::UnsupportedVersion: return "The GLTF version is not supported by fastgltf.";
 			case Error::InvalidURI: return "A URI from a buffer or image failed to be parsed.";
             case Error::InvalidFileData: return "The file data is invalid, or the file type could not be determined.";
             case Error::FailedWritingFiles: return "The exporter failed to write some files (buffers/images) to disk.";

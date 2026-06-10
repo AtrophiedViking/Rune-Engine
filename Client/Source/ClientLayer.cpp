@@ -5,6 +5,7 @@
 ClientLayer::ClientLayer()
 {
 	RUNE_DEBUG("Created New Client-Layer!");
+	Rune::Application::Get().AssetManagerGet().GLBLoad("Kobold.glb");
 }
 
 ClientLayer::~ClientLayer()
